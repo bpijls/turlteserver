@@ -3,8 +3,8 @@ import processing.net.*;
 String HTTP_GET_REQUEST = "GET /";
 String HTTP_HEADER = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nAccess-Control-Allow-Origin: *\r\n\r\n";
 
-Server s;
-Client c;
+Server server;
+Client client;
 String input;
 int port = 8008;
 AssetManager assetManager;
@@ -18,7 +18,7 @@ StringDict params = new StringDict();
 void setup() 
 {   
   fullScreen();
-  s = new Server(this, port); // start server on http-alt
+  server = new Server(this, port); // start server on http-alt
 
   assetManager = new AssetManager();
 
@@ -36,9 +36,9 @@ void setup()
 void draw() 
 {    
   // Receive data from client
-  c = s.available();
-  if (c != null) {
-    input = c.readString();      
+  client = server.available();
+  if (client != null) {
+    input = client.readString();      
 
     String errorMessage = "";
     String headers = input;
@@ -47,15 +47,14 @@ void draw()
 
     if (input.indexOf(HTTP_GET_REQUEST) == 0) // starts with ...
     {
-      c.write(HTTP_HEADER);  // answer that we're ok with the request and are gonna send html
+      client.write(HTTP_HEADER);  // answer that we're ok with the request and are gonna send html
       try {
-        String hostName = c.ip();
+        String hostName = client.ip();
 
         if (!turtles.containsKey(hostName))
           turtles.put(hostName, new Turtle(hostName));
+          
         currentTurtle = turtles.get(hostName);
-
-
         currentTurtle.parseCommands(getParameters);
       }
       catch(Exception e) {
@@ -64,26 +63,26 @@ void draw()
 
       //      // some html
       if (currentTurtle.showHelp) {
-        c.write("<!DOCTYPE html><html><head><title>HTTP Turtle</title></head>"
+        client.write("<!DOCTYPE html><html><head><title>HTTP Turtle</title></head>"
           +"<style> table { border-collapse: collapse; border: 1px solid #000000}</style>"
           +"<body>");
-        c.write(h3("Turtle Graphics Using HTTP"));
-        c.write(h3("Possible GET commands") + table(params));
-        c.write(h3("HTTP Request Headers") + table(httpHeaders));
-        c.write(h3("HTTP GET Parameters") + table(getParameters));
+        client.write(h3("Turtle Graphics Using HTTP"));
+        client.write(h3("Possible GET commands") + table(params));
+        client.write(h3("HTTP Request Headers") + table(httpHeaders));
+        client.write(h3("HTTP GET Parameters") + table(getParameters));
 
         if (currentTurtle.showUI) 
-          c.write(h3("\"UI\"") + form(params));
+          client.write(h3("\"UI\"") + form(params));
 
-        c.write(h3("Errors") + p(errorMessage == "" ?  "none" : errorMessage));
-        c.write("</body></html>");
+        client.write(h3("Errors") + p(errorMessage == "" ?  "none" : errorMessage));
+        client.write("</body></html>");
       } else
       {
-        c.write("For help go to: serverAddress:"+port + "/?h=true");
+        client.write("For help go to: serverAddress:"+port + "/?h=true");
       }
     }
     // close connection to client, otherwise it's gonna wait forever
-    c.stop();
+    client.stop();
   }
 
   background(0);

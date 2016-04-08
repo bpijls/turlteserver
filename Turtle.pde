@@ -15,10 +15,11 @@ class Turtle {
     spriteSheet = new SpriteSheet("turtle@X4N4.png");
     spriteSheet.pause();
     float x = random(0, width-spriteSheet.frameWidth), y = random(0, height - spriteSheet.frameHeight); 
-    position = new PVector(x,y);
-    startPosition = new PVector(x,y);
+    position = new PVector(x, y);
+    startPosition = new PVector(x, y);
     direction = new PVector(0, 1);
-    endPosition = new PVector(x,y);;
+    endPosition = new PVector(x, y);
+    ;
     this.name = name;
   }
 
@@ -29,13 +30,13 @@ class Turtle {
     if (commands.hasKey("g")) lineColor = setGreen(lineColor, Integer.parseInt(commands.get("g")));
     if (commands.hasKey("b")) lineColor = setBlue(lineColor, Integer.parseInt(commands.get("b")));
     if (commands.hasKey("w")) lineWeight = Integer.parseInt(commands.get("w"));
-    if (commands.hasKey("name")) name = commands.get("name");
-    name = name.substring(0, 16);
-    if (name.equals(""))
-      name = "NoName Troll";
+    if (commands.hasKey("name")) name = commands.get("name");    
     if (commands.hasKey("c")) if (commands.get("c").equals("true")) lines.clear();
     if (commands.hasKey("h")) showHelp = commands.get("h").equals("true") ? true : false;
     if (commands.hasKey("u")) showUI = commands.get("u").equals("true") ? true : false;
+
+    name = name.substring(0, 16);
+    if (name.equals("")) name = "NoName Troll";
   }
 
   void update() {
@@ -55,6 +56,7 @@ class Turtle {
       startPosition.set(endPosition.x, endPosition.y);
       spriteSheet.pause();
     }
+    
   }
 
   void moveX(float x) {
@@ -109,7 +111,6 @@ class Turtle {
         {
           rotate(-angle);
           text(name, -spriteSheet.frameWidth/2 - textWidth(name)/2, -20);
-         
         }
         popMatrix();
       }    
