@@ -14,13 +14,16 @@ class Turtle {
   Turtle(String name) {    
     spriteSheet = new SpriteSheet("turtle@X4N4.png");
     spriteSheet.pause();
-    float x = random(0, width-spriteSheet.frameWidth), y = random(0, height - spriteSheet.frameHeight); 
+    float x = random(0, width-spriteSheet.frameWidth), 
+      y = random(0, height - spriteSheet.frameHeight); 
     position = new PVector(x, y);
     startPosition = new PVector(x, y);
     direction = new PVector(0, 1);
     endPosition = new PVector(x, y);
-    ;
-    this.name = name;
+
+    this.name = name;    
+    if (this.name == null)
+      this.name = "blub";
   }
 
   void parseCommands(StringDict commands) {
@@ -56,7 +59,6 @@ class Turtle {
       startPosition.set(endPosition.x, endPosition.y);
       spriteSheet.pause();
     }
-    
   }
 
   void moveX(float x) {
