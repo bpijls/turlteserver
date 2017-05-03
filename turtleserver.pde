@@ -1,8 +1,14 @@
 import processing.net.*;
+import java.net.InetAddress;
+
 
 String HTTP_GET_REQUEST = "GET /";
 String HTTP_HEADER = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nAccess-Control-Allow-Origin: *\r\n\r\n";
 
+String ip;
+InetAddress inet;    
+
+String ddnsLink = "turlte.ddns.net";
 Server server;
 Client client;
 String input;
@@ -31,6 +37,18 @@ void setup()
   params.set("u", "Show \"UI\" (true or false)");
   params.set("name", "turtle name");
   params.set("h", "show help");
+
+  String dnsUpdateAddress = "dynupdate.no-ip.com",
+    dnsUpdateURL = "/nic/update?hostname=tURLte.ddns.net&myip="+ip;
+    
+  Client client = new Client(this, dnsUpdateAddress, 80);
+  client.write("GET " + dnsUpdateURL +" HTTP/1.0\r\n"); // Use the HTTP "GET" command to ask for a Web page
+  client.write("\r\n");
+  delay(1000);
+  while (client.available() > 0) { // If there's incoming data from the client...
+    String data = client.readString(); // ...then grab it and print it
+    println(data);
+  }
 }
 
 void draw() 
@@ -53,7 +71,7 @@ void draw()
 
         if (!turtles.containsKey(hostName))
           turtles.put(hostName, new Turtle(hostName));
-          
+
         currentTurtle = turtles.get(hostName);
         currentTurtle.parseCommands(getParameters);
       }
@@ -78,7 +96,8 @@ void draw()
         client.write("</body></html>");
       } else
       {
-        client.write("For help go to: serverAddress:"+port + "/?h=true");
+        String link = "http://" + ddnsLink + ":" + port + "/?h=true";
+        client.write("For help go to http://" + ddnsLink + ":" + port + " and set the url encoded parameter \"h\" to \"true\".");
       }
     }
     // close connection to client, otherwise it's gonna wait forever
