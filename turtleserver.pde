@@ -1,18 +1,12 @@
 import processing.net.*;
 import java.net.InetAddress;
 
-
 String HTTP_GET_REQUEST = "GET /";
 String HTTP_HEADER = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nAccess-Control-Allow-Origin: *\r\n\r\n";
 
-String ip;
-InetAddress inet;    
-
-String ddnsLink = "turlte.ddns.net";
 Server server;
 Client client;
 String input;
-int port = 8008;
 AssetManager assetManager;
 HashMap<String, Turtle> turtles = new HashMap();
 Turtle currentTurtle;
@@ -38,17 +32,7 @@ void setup()
   params.set("name", "turtle name");
   params.set("h", "show help");
 
-  String dnsUpdateAddress = "dynupdate.no-ip.com",
-    dnsUpdateURL = "/nic/update?hostname=tURLte.ddns.net&myip="+ip;
-    
-  Client client = new Client(this, dnsUpdateAddress, 80);
-  client.write("GET " + dnsUpdateURL +" HTTP/1.0\r\n"); // Use the HTTP "GET" command to ask for a Web page
-  client.write("\r\n");
-  delay(1000);
-  while (client.available() > 0) { // If there's incoming data from the client...
-    String data = client.readString(); // ...then grab it and print it
-    println(data);
-  }
+  configureDDNS();
 }
 
 void draw() 
@@ -96,8 +80,7 @@ void draw()
         client.write("</body></html>");
       } else
       {
-        String link = "http://" + ddnsLink + ":" + port + "/?h=true";
-        client.write("For help go to http://" + ddnsLink + ":" + port + " and set the url encoded parameter \"h\" to \"true\".");
+        client.write("For help go to http://" + ddnsAddress + ":" + port + " and set the url encoded parameter \"h\" to \"true\".");
       }
     }
     // close connection to client, otherwise it's gonna wait forever
@@ -128,4 +111,31 @@ void mouseClicked() {
 void keyPressed() {
   if (key == ' ')
     turtles.clear();
+}
+
+void configureDDNS() {
+  try {
+    println("Configure dynamic DNS");
+    InetAddress inet = InetAddress.getLocalHost();    
+    String ip = inet.getHostAddress();    
+    String ddnsURL = "/nic/update?hostname=" + ddnsAddress + "&myip="+ip;
+
+    ddnsURL = "/nic/update?hostname=" + ddnsAddress + "&myip="+ip;
+
+    Client c = new Client(this, "dynupdate.no-ip.com", 80); // Connect to server on port 80
+    c.write("GET "+ ddnsURL + " HTTP/1.0\r\n"); // Use the HTTP "GET" command to ask for a Web page
+    c.write("Host: dynupdate.no-ip.com\r\n");
+    c.write("Authorization: Basic " + authString + "\r\n");
+    c.write("User-Agent: tURLteserver/1.0 b.pijls@hva.nl\r\n");
+    c.write("\r\n");
+    
+    delay(1000);
+    while (c.available() > 0) { // If there's incoming data from the client...
+      String data = c.readString(); // ...then grab it and print it
+      println(data);
+    }
+  }
+  catch(Exception e) {
+    println("failed to configure DynamicDNS");
+  }
 }
