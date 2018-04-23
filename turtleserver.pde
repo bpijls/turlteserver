@@ -65,10 +65,10 @@ void draw()
 
       //      // some html
       if (currentTurtle.showHelp) {
-        client.write("<!DOCTYPE html><html><head><title>HTTP Turtle</title></head>"
+        client.write("<!DOCTYPE html><html><head><title>HTTP Turlte</title></head>"
           +"<style> table { border-collapse: collapse; border: 1px solid #000000}</style>"
           +"<body>");
-        client.write(h3("Turtle Graphics Using HTTP"));
+        client.write(h3("Turlte Graphics Using HTTP"));
         client.write(h3("Possible GET commands") + table(params));
         client.write(h3("HTTP Request Headers") + table(httpHeaders));
         client.write(h3("HTTP GET Parameters") + table(getParameters));
