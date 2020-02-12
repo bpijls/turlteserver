@@ -33,5 +33,3 @@ class AssetManager {
         add(file.getName());
   }
 }
-
-
