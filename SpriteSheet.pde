@@ -72,4 +72,3 @@ class SpriteSheet {
     -frameWidth, -frameHeight, frameWidth, frameHeight);
   }
 }
-

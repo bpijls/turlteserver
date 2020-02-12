@@ -51,7 +51,7 @@ void draw()
     {
       client.write(HTTP_HEADER);  // answer that we're ok with the request and are gonna send html
       try {
-        String hostName = client.ip();
+        String hostName = httpHeaders.get("x-forwarded-for");
 
         if (!turtles.containsKey(hostName))
           turtles.put(hostName, new Turtle(hostName));
@@ -80,7 +80,7 @@ void draw()
         client.write("</body></html>");
       } else
       {
-        client.write("For help go to http://" + ddnsAddress + ":" + port + " and set the url encoded parameter \"h\" to \"true\".");
+        client.write("For help go to http://" + ddnsAddress + ":" + port + " and set the <a href=\"https://en.wikipedia.org/wiki/Query_string\" target=\"_blank\">query string</a> \"h\" to \"true\".");
       }
     }
     // close connection to client, otherwise it's gonna wait forever
