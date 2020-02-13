@@ -17,7 +17,8 @@ StringDict params = new StringDict();
 
 void setup() 
 {   
-  fullScreen();
+  //fullScreen();
+  size(800, 600);
   server = new Server(this, port); // start server on http-alt
 
   assetManager = new AssetManager();
