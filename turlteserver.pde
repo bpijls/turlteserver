@@ -17,7 +17,8 @@ StringDict params = new StringDict();
 
 void setup() 
 {   
-  fullScreen();
+  //fullScreen();
+  size(800, 600);
   server = new Server(this, port); // start server on http-alt
 
   assetManager = new AssetManager();
@@ -51,7 +52,11 @@ void draw()
     {
       client.write(HTTP_HEADER);  // answer that we're ok with the request and are gonna send html
       try {
-        String hostName = httpHeaders.get("x-forwarded-for");
+        String hostName = "";
+        if(httpHeaders.hasKey("x-forwarded-for"))
+          hostName = httpHeaders.get("x-forwarded-for");
+        else if(httpHeaders.hasKey("X-Forwarded-For"))
+          hostName = httpHeaders.get("X-Forwarded-For");
 
         if (!turtles.containsKey(hostName))
           turtles.put(hostName, new Turtle(hostName));
